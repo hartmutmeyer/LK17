@@ -1,7 +1,10 @@
-import java.applet.Applet;
-import java.applet.AudioClip;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
+import java.io.IOException;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -20,13 +23,24 @@ public class PlayWAV extends JFrame {
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new BorderLayout(0, 0));
 		setContentPane(contentPane);
-		AudioClip sound = Applet.newAudioClip(getClass().getResource("wallewal.wav"));   // Keine MP3, OGG etc. - nur WAV
-		sound.play();
-		//sound.loop();
+		Clip sound;
+		try {
+			sound = AudioSystem.getClip();
+		    sound.open(AudioSystem.getAudioInputStream(getClass().getResource("wallewal.wav")));   // Keine MP3, OGG etc. - nur WAV
+		    sound.start();
+		    //sound.loop(Clip.LOOP_CONTINUOUSLY);
+		} catch (LineUnavailableException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (UnsupportedAudioFileException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
+			@Override
 			public void run() {
 				try {
 					PlayWAV frame = new PlayWAV();
