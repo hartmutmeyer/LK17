@@ -105,7 +105,7 @@ public class Oldtimer extends JFrame {
 
 	// Anfang Ereignisprozeduren
 	private void start() {
-		timer = new OldtimerTimer(1000, this);
+		timer = new OldtimerTimer(10, this);
 		timer.start();
 		zustandAuto = FAEHRT;
 		setButtonState();
