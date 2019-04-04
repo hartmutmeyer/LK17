@@ -1,22 +1,30 @@
-import java.awt.*;
-import java.awt.event.*;
+import javax.swing.JFrame;
 
 public class OldtimerTimer extends Thread {
-	Oldtimer app;
-	public boolean anhalten = false;
 
-	public OldtimerTimer(Oldtimer app) {
+	int millis;
+	JFrame app;
+	boolean anhalten = false;
+	
+	public OldtimerTimer(int millis, JFrame app) {
+		this.millis = millis;
 		this.app = app;
 	}
 
+	@Override
 	public void run() {
 		while (!anhalten) {
 			try {
-				Thread.sleep(10);
-			} catch (Exception e) {
-				// nichts
+				Thread.sleep(millis);
+				app.repaint();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
 			}
-			app.repaint();
 		}
 	}
+	
+	public void beenden() {
+		anhalten = true;
+	}
+
 }

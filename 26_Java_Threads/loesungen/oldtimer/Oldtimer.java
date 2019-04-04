@@ -2,7 +2,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.EventQueue;
-import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.Image;
@@ -27,6 +26,9 @@ public class Oldtimer extends JFrame {
 	private OldtimerTimer timer;
 	private int x = 250;
 	private Image car;
+	private final static int STEHT = 0;
+	private final static int FAEHRT = 1;
+	private int zustandAuto = STEHT;
 
 	public Oldtimer(final String title) {
 		super(title);
@@ -92,7 +94,7 @@ public class Oldtimer extends JFrame {
 		}
 	}
 
-	public void myPaint(Graphics g) {
+	private void myPaint(Graphics g) {
 		// wird aufgerufen, wenn das Fenster neu gezeichnet wird
 		g.drawImage(car, x, 70, this);
 		x -= 3;
@@ -102,19 +104,29 @@ public class Oldtimer extends JFrame {
 	}
 
 	// Anfang Ereignisprozeduren
-	public void start() {
-		timer = new OldtimerTimer(this);
+	private void start() {
+		timer = new OldtimerTimer(1000, this);
 		timer.start();
-		btnStart.setEnabled(false);
-		btnStopp.setEnabled(true);
+		zustandAuto = FAEHRT;
+		setButtonState();
 	}
 
-	public void stopp() {
-		timer.anhalten = true;
-		btnStart.setEnabled(true);
-		btnStopp.setEnabled(false);
+	private void stopp() {
+		timer.beenden();
+		zustandAuto = STEHT;
+		setButtonState();
 	}
 	// Ende Ereignisprozeduren
+	
+	private void setButtonState() {
+		if (zustandAuto == FAEHRT) {
+			btnStart.setEnabled(false);
+			btnStopp.setEnabled(true);
+		} else {
+			btnStart.setEnabled(true);
+			btnStopp.setEnabled(false);
+		}
+	}
 
 	public static void main(final String[] args) {
 		EventQueue.invokeLater(new Runnable() {
