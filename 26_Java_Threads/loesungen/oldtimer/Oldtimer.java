@@ -46,7 +46,7 @@ public class Oldtimer extends JFrame {
 		pnlButtons.add(lblDummy1);
 		JLabel lblDummy2 = new JLabel();
 		pnlButtons.add(lblDummy2);
-		btnStart.setText("start");
+		btnStart.setText("Start");
 		pnlButtons.add(btnStart);
 		btnStart.addActionListener(new ActionListener() {
 			@Override
@@ -54,7 +54,7 @@ public class Oldtimer extends JFrame {
 				start();
 			}
 		});
-		btnStopp.setText("stop");
+		btnStopp.setText("Stop");
 		pnlButtons.add(btnStopp);
 		btnStopp.addActionListener(new ActionListener() {
 			@Override
