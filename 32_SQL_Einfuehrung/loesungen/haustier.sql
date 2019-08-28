@@ -227,36 +227,180 @@ WHERE nachname = 'Anderson';
 
 # 3A) Zeige ohne Verwendung der WHERE-Klausel eine Tabelle mit allen Besitzern (Nachname 
 #     und Vorname) und Tieren (Name und Tierart) an. Was für eine Tabelle wird erstellt?
-
+#SELECT besitzer.nachname, besitzer.vorname, tier.name, tier.tierart
+#FROM besitzer, tier;
 
 # 3B) Zeige eine Liste mit allen Besitzern und den zu ihnen gehörenden Tieren an. Es sollen
 #     alle Spalten angezeigt werden.
-
+#SELECT *
+#FROM besitzer, tier
+#WHERE besitzer_id = tier_besitzer_id;
 
 # 3C) Zeige eine Tabelle mit allen Besitzern (Nachname und Vorname) und ihren Tieren 
 #     (Name und Tierart) an. Sortiere die Liste in aufsteigender alphabetischer Reihenfolge
 #     zunächst nach dem Nachnamen und dann nach dem Vornamen.
-
+#SELECT besitzer.nachname, besitzer.vorname, tier.name, tier.tierart 
+#FROM besitzer, tier 
+#WHERE besitzer_id = tier_besitzer_id 
+#ORDER BY besitzer.nachname, besitzer.vorname ASC;
 
 # 3D) Zeige eine Tabelle mit allen Besitzern (Vor- und Nachname) und ihren lebendigen Tieren
 #     an (Name und Tierart). Sortiere die Liste nach der Tierart.
-
+#SELECT besitzer.nachname, besitzer.vorname, tier.name, tier.tierart 
+#FROM besitzer, tier 
+#WHERE besitzer_id = tier_besitzer_id AND tier.lebendig = 'ja' 
+#ORDER BY tier.tierart ASC;
 
 # 3E) Zeige alle Tiere von Mirco Sandelmann an (Name, Tierart und „lebendig“).
-
+#SELECT name, tierart, lebendig 
+#FROM tier, besitzer 
+#WHERE tier_besitzer_id = besitzer_id
+#AND besitzer.vorname = 'Mirco'
+#AND besitzer.nachname = 'Sandelmann';
 
 # 3F) Wähle alle Besitzer von Hunden aus. Zeige Vor- und Nachname der Besitzer sowie
 #     Name, Geburtstag und Todestag des Hundes an.
-
+#SELECT besitzer.vorname, besitzer.nachname, tier.name, tier.geburtstag, tier.todestag 
+#FROM besitzer, tier 
+#WHERE besitzer_id = tier_besitzer_id
+#AND tier.tierart = 'Hund';
 
 # 3G) Zeige eine Liste der Besitzer (Vor- und Nachname) und der Anzahl der Tiere an, die
 #     sie besitzen. Sortiere die Liste in umgekehrter alphabetischer Reihenfolge nach
 #     Nachnamen.
-
+#SELECT besitzer.vorname, besitzer.nachname, COUNT(*) 
+#FROM besitzer, tier 
+#WHERE tier_besitzer_id = besitzer_id 
+#GROUP BY besitzer_id 
+#ORDER BY besitzer.nachname DESC;
 
 # 3H) Zeige alle Besitzer mit Vor- und Nachnamen an, die zwei oder mehr Tiere besitzen.
-
+#SELECT besitzer.vorname, besitzer.nachname 
+#FROM besitzer, tier 
+#WHERE tier_besitzer_id = besitzer_id 
+#GROUP BY besitzer_id 
+#HAVING COUNT(*) >= 2;
 
 # 3I) Zähle die Anzahl der Besitzer, die einen Hund oder eine Katze besitzen.
+#SELECT COUNT(DISTINCT besitzer_id) 
+#FROM besitzer, tier 
+#WHERE tier_besitzer_id = besitzer_id 
+#AND (
+#    tier.tierart = 'Hund' 
+#    OR tier.tierart = 'Katze'
+#);
+
+# Übung 4, Aufgabe 1
+
+ALTER TABLE tier 
+	ADD COLUMN (tier_id INT AUTO_INCREMENT),
+	DROP FOREIGN KEY tier_ibfk_1,
+	DROP COLUMN tier_besitzer_id,
+	ADD PRIMARY KEY (tier_id)
+;
+
+CREATE TABLE beziehung
+(
+	beziehung_besitzer_id INT,
+	beziehung_tier_id INT,
+	PRIMARY KEY (beziehung_besitzer_id, beziehung_tier_id),
+	FOREIGN KEY (beziehung_besitzer_id) REFERENCES besitzer (besitzer_id) ON DELETE CASCADE,
+	FOREIGN KEY (beziehung_tier_id) REFERENCES tier (tier_id) ON DELETE CASCADE
+);
+
+UPDATE besitzer
+SET straße='Unterstraße 17', plz=28232, ort='Bremen', telefonnr='0421/123456'
+WHERE nachname = 'Sandelmann'
+AND vorname = 'Sandra';
+
+INSERT INTO besitzer VALUES
+(NULL, 'Frau', 'Anka', 'Anderson', 'Wilhelminenweg 42', 28315, 'Bremen', NULL),
+(NULL, 'Herr', 'Max',  'Anderson', 'Wilhelminenweg 42', 28315, 'Bremen', NULL),
+(NULL, 'Herr', 'Kai',  'Anderson', 'Unsinnstraße 65',   28245, 'Bremen', NULL);
+
+#SELECT * FROM besitzer;
+#SELECT * FROM tier;
+
+INSERT INTO beziehung VALUES
+(
+    (SELECT besitzer_id FROM besitzer WHERE nachname = 'Zoo Lilliput'),
+    (SELECT tier_id FROM tier WHERE name = 'Bello')
+),
+(
+    (SELECT besitzer_id FROM besitzer WHERE nachname = 'Zoo Lilliput'),
+    (SELECT tier_id FROM tier WHERE name = 'Lassie')
+),
+(
+    (SELECT besitzer_id FROM besitzer WHERE vorname = 'Sandra' AND nachname = 'Sandelmann'),
+    (SELECT tier_id FROM tier WHERE name = 'Daisy' AND tierart = 'Kanarienvogel')
+),
+(
+    (SELECT besitzer_id FROM besitzer WHERE vorname = 'Sandra' AND nachname = 'Sandelmann'),
+    (SELECT tier_id FROM tier WHERE name = 'Mausi')
+),
+(
+    (SELECT besitzer_id FROM besitzer WHERE vorname = 'Sandra' AND nachname = 'Sandelmann'),
+    (SELECT tier_id FROM tier WHERE name = 'Blacky')
+),
+(
+    (SELECT besitzer_id FROM besitzer WHERE vorname = 'Mirco' AND nachname = 'Sandelmann'),
+    (SELECT tier_id FROM tier WHERE name = 'Mausi')
+),
+(
+    (SELECT besitzer_id FROM besitzer WHERE vorname = 'Mirco' AND nachname = 'Sandelmann'),
+    (SELECT tier_id FROM tier WHERE name = 'Blacky')
+),
+(
+    (SELECT besitzer_id FROM besitzer WHERE vorname = 'Mirco' AND nachname = 'Sandelmann'),
+    (SELECT tier_id FROM tier WHERE name = 'Harald')
+),
+(
+    (SELECT besitzer_id FROM besitzer WHERE vorname = 'Tobias' AND nachname = 'Winkelmann'),
+    (SELECT tier_id FROM tier WHERE name = 'Daisy' AND tierart = 'Schildkröte')
+),
+(
+    (SELECT besitzer_id FROM besitzer WHERE vorname = 'Tobias' AND nachname = 'Winkelmann'),
+    (SELECT tier_id FROM tier WHERE name = 'Hasso')
+),
+(
+    (SELECT besitzer_id FROM besitzer WHERE vorname = 'Sandra' AND nachname = 'Anderson'),
+    (SELECT tier_id FROM tier WHERE name = 'Maja')
+),
+(
+    (SELECT besitzer_id FROM besitzer WHERE vorname = 'Anka' AND nachname = 'Anderson'),
+    (SELECT tier_id FROM tier WHERE name = 'Maja')
+),
+(
+    (SELECT besitzer_id FROM besitzer WHERE vorname = 'Max' AND nachname = 'Anderson'),
+    (SELECT tier_id FROM tier WHERE name = 'Maja')
+),
+(
+    (SELECT besitzer_id FROM besitzer WHERE vorname = 'Kai' AND nachname = 'Anderson'),
+    (SELECT tier_id FROM tier WHERE name = 'Maja')
+);
+
+# Übung 4, Aufgabe 2
+
+# 2A) Zeige eine Liste aller Besitzer (Vor- und Nachname) und ihrer Tiere (Name und Tierart)
+#     an. Sortiere die Liste absteigend nach dem Namen der Tiere.
+
+
+# 2B) Liste alle Besitzer von Maja auf (Vor- und Nachname).
+
+
+# 2C) Zähle die Anzahl der Besitzer von Blacky.
+
+
+# 2D) Erstelle eine Liste, die angibt, wie viele Tiere jede einzelne Person besitzt
+#     (Ausgabe: Anzahl, Vor- und Nachname).
+
+
+# 2E) Liste die vollständigen Daten aller Besitzer auf, deren Telefonnummer nicht bekannt ist.
+
+
+# 2F) Liste Straße, PLZ und Ort aller Besitzer auf. Dabei soll jede Adresse nur einmal
+#     ausgegeben werden.
+
+
 
 
