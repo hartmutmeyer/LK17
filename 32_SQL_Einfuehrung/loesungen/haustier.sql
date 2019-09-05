@@ -383,24 +383,86 @@ INSERT INTO beziehung VALUES
 
 # 2A) Zeige eine Liste aller Besitzer (Vor- und Nachname) und ihrer Tiere (Name und Tierart)
 #     an. Sortiere die Liste absteigend nach dem Namen der Tiere.
-
+#SELECT besitzer.vorname, besitzer.nachname, tier.name, tier.tierart 
+#FROM besitzer, tier, beziehung 
+#WHERE besitzer_id = beziehung_besitzer_id
+#AND tier_id = beziehung_tier_id 
+#ORDER BY tier.name DESC;
 
 # 2B) Liste alle Besitzer von Maja auf (Vor- und Nachname).
-
+#SELECT besitzer.vorname, besitzer.nachname
+#FROM besitzer, tier, beziehung 
+#WHERE besitzer_id = beziehung_besitzer_id
+#AND tier_id = beziehung_tier_id
+#AND tier.name = 'Maja';
 
 # 2C) Zähle die Anzahl der Besitzer von Blacky.
-
+#SELECT COUNT(*)
+#FROM besitzer, tier, beziehung 
+#WHERE besitzer_id = beziehung_besitzer_id
+#AND tier_id = beziehung_tier_id
+#AND tier.name = 'Blacky';
 
 # 2D) Erstelle eine Liste, die angibt, wie viele Tiere jede einzelne Person besitzt
 #     (Ausgabe: Anzahl, Vor- und Nachname).
-
+#SELECT COUNT(*), besitzer.vorname, besitzer.nachname
+#FROM besitzer, tier, beziehung 
+#WHERE besitzer_id = beziehung_besitzer_id
+#AND tier_id = beziehung_tier_id
+#GROUP BY besitzer_id;
 
 # 2E) Liste die vollständigen Daten aller Besitzer auf, deren Telefonnummer nicht bekannt ist.
-
+#SELECT * 
+#FROM besitzer
+#WHERE telefonnr IS NULL;
 
 # 2F) Liste Straße, PLZ und Ort aller Besitzer auf. Dabei soll jede Adresse nur einmal
 #     ausgegeben werden.
+#SELECT straße, plz, ort
+#FROM besitzer
+#GROUP BY straße;
+
+# oder alternativ:
+
+#SELECT DISTINCT straße, plz, ort
+#FROM besitzer;
+
+# Übung 4, Aufgabe 3
+
+# 3A
+DELETE FROM beziehung
+WHERE beziehung_tier_id = (
+    SELECT tier_id
+    FROM tier
+    WHERE name = 'Mausi'
+);
+
+# 3B
+INSERT INTO besitzer VALUES
+(NULL, 'Frau', 'Johanna', 'Sonntag', 'Glücksweg 13', '28333', 'Bremen', NULL);
+#SELECT * FROM besitzer;
+
+# Übung 4, Aufgabe 4
+
+# 4A) Liste die Personen, die momentan kein Tier besitzen, mit Ihrem Vor- und Nachnamen auf.
 
 
+# 4B) Liste die Tiere mit Namen auf, die keinen Besitzer haben.
 
+
+# 4C) Liste alle Personen, die mit Anka Anderson zusammen wohnen (d.h. alle, die dieselbe
+#     Strasse haben) mit ihren vollständigen Daten auf. Anka selbst darf auch in der
+#     Liste erscheinen.
+
+
+# 4D) Liste alle Tiere mit Namen auf, die am selben Tag geboren wurden wie Maja. Maja
+#     selbst soll nicht in der Liste erscheinen.
+
+
+# 4E) Liste die Namen der Tiere auf, die am selben Tag geboren wurden wie Maja, und den
+#     Vor- und Nachnamen ihrer Besitzer. Maja selbst soll nicht in der Liste erscheinen.
+
+
+# 4F) Liste alle Tiere mit Namen auf, die denselben Besitzer haben wie Hasso. Hasso darf
+#     ebenfalls in der Liste erscheinen.
 
