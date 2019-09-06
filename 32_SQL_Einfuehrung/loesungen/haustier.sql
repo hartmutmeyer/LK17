@@ -445,24 +445,49 @@ INSERT INTO besitzer VALUES
 # Übung 4, Aufgabe 4
 
 # 4A) Liste die Personen, die momentan kein Tier besitzen, mit Ihrem Vor- und Nachnamen auf.
-
+SELECT besitzer.vorname, besitzer.nachname
+FROM besitzer LEFT JOIN beziehung
+ON beziehung_besitzer_id = besitzer_id
+WHERE beziehung_tier_id IS NULL;
 
 # 4B) Liste die Tiere mit Namen auf, die keinen Besitzer haben.
-
+SELECT tier.name
+FROM tier LEFT JOIN beziehung
+ON beziehung_tier_id = tier_id
+WHERE beziehung_besitzer_id IS NULL;
 
 # 4C) Liste alle Personen, die mit Anka Anderson zusammen wohnen (d.h. alle, die dieselbe
 #     Strasse haben) mit ihren vollständigen Daten auf. Anka selbst darf auch in der
 #     Liste erscheinen.
-
+SELECT mitwohner.*
+FROM besitzer anka, besitzer mitwohner
+WHERE anka.vorname = 'Anka'
+AND anka.nachname = 'Anderson'
+AND anka.straße = mitwohner.straße;
 
 # 4D) Liste alle Tiere mit Namen auf, die am selben Tag geboren wurden wie Maja. Maja
 #     selbst soll nicht in der Liste erscheinen.
-
+SELECT anderestier.name, anderestier.geburtstag
+FROM tier maja, tier anderestier
+WHERE maja.name = 'Maja'
+AND maja.geburtstag = anderestier.geburtstag
+AND anderestier.name != 'Maja';
 
 # 4E) Liste die Namen der Tiere auf, die am selben Tag geboren wurden wie Maja, und den
 #     Vor- und Nachnamen ihrer Besitzer. Maja selbst soll nicht in der Liste erscheinen.
-
+SELECT anderestier.name, besitzer.vorname, besitzer.nachname
+FROM tier maja, tier anderestier, besitzer, beziehung
+WHERE maja.name = 'Maja'
+AND maja.geburtstag = anderestier.geburtstag
+AND anderestier.name != 'Maja' 
+AND anderestier.tier_id = beziehung_tier_id
+AND besitzer_id = beziehung_besitzer_id;
 
 # 4F) Liste alle Tiere mit Namen auf, die denselben Besitzer haben wie Hasso. Hasso darf
 #     ebenfalls in der Liste erscheinen.
-
+SELECT anderestier.name
+FROM tier hasso, tier anderestier, beziehung hassobeziehung, beziehung anderebeziehung
+WHERE hasso.name = 'Hasso'
+AND hasso.tier_id = hassobeziehung.beziehung_tier_id
+AND anderestier.tier_id = anderebeziehung.beziehung_tier_id 
+AND hassobeziehung.beziehung_besitzer_id = anderebeziehung.beziehung_besitzer_id;
