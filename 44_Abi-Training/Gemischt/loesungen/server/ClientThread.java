@@ -3,7 +3,6 @@ import java.io.*;
 import java.sql.*;
 
 class ClientThread extends Thread {
-	BuchladenServer server;
 	Socket socket;
 	InputStreamReader in;
 	OutputStreamWriter out;
@@ -12,7 +11,6 @@ class ClientThread extends Thread {
 	static Object monitor = new Object();
 
 	public ClientThread(Socket socket) {
-		this.server = server;
 		this.socket = socket;
 	}
 
